@@ -1,6 +1,6 @@
 @import '../bower_components/bourbon/app/assets/stylesheets/bourbon';
 @import '../bower_components/neat/app/assets/stylesheets/neat';
-
+@import 'font-awesome';
 // Typography
 $base-font-family: $helvetica;
 
@@ -18,4 +18,329 @@ body {
   font-family: $base-font-family;
   background-color: $base-background-color;
   color: $base-font-color;
+  // background-image: url('/images/bg.jpg');
+  background: url(/images/bg.jpg) no-repeat; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+section {
+  @include span-columns(8);
+  @include shift(2);
+}
+
+.section-header {
+  margin-bottom: 25px;
+}
+
+.social {
+  @include span-columns(1);
+  border-bottom: 3px solid #949291;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.social-blue {
+  @include shift(8);
+  height: 72px;
+  background-color: #445797;
+}
+
+.social-yellow {
+  height: 72px;
+  background-color: #CB8E31;
+}
+
+.social-light-blue {
+  height: 72px;
+  background-color: #6A8DC7;
+}
+
+.social-red {
+  height: 72px;
+  background-color: #B2382C;
+}
+
+.nav-button {
+  @include span-columns(3);
+  height: 50px;
+  background-color: #B2382C;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  
+  .nav-content {
+    text-align: center;
+    color: #ffffff;
+    margin-top: 12px;
+    font-size: 24px;
+  }
+  
+  .nav-content::before {
+    content: "- ";
+  }
+    
+  .nav-content::after {
+    content: " -";
+  }
+}
+
+.logo {
+  @include span-columns(6);
+  height: 350px;
+}
+
+.gumbotron-image {
+  @include span-columns(12);
+  background-image: url('/images/top-image.png');
+  height: 500px;
+  padding: 75px 0 0 15px;
+  margin-bottom: 25px;
+  border: 10px solid #ffffff;
+}
+
+.circle-btn-container {
+  @include span-columns(1);
+  @include shift(5.5)
+}
+
+.btn-circle {
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  height: 15px;
+  width: 15px;
+  outline: none;
+  margin-bottom: 25px;
+}
+
+.article {
+  @include span-columns(4);
+  height: 500px;
+  background-color: #ffffff;
+  margin-bottom: 25px;
+  padding: 20px;
+  
+  .article-title {
+    min-height: 165px;
+    max-height: 165px;
+    margin-top: 0px;
+    font-size: 2.1em;
+  }
+  
+  .article-date {
+    margin-top: 0px;
+  }
+  
+  .article-content {
+    min-height: 175px;
+    max-height: 175px;
+    font-size: 1.2em;
+  }
+  
+  .article-link {
+    font-size: 1.3em;
+    text-align: center;
+    color: #B2382C;
+  }
+  
+  .article-link::before{
+    color: #000000;
+    content: "[ ";
+  }
+  
+  .article-link::after{
+    color: #000000;
+    content: " ]";
+  }
+}
+
+.skateboarders-group-one {
+  @include span-columns(8);
+}
+
+.skaters {
+  @include span-columns(6);
+  height: 250px;
+  margin-bottom: 25px;
+  border: 5px solid #ffffff;
+}
+
+.skater-lance-container {
+  background: url('/images/Lance.png');
+  background-position: 75% 50%
+}
+
+.skater-lance {
+  text-align: center;
+  font-size: 4em;
+  color: #ffffff; 
+}
+
+.skateboarders-arrow {
+	position: absolute;
+  left: 20px;
+  top: 1350px;
+  color: #ffffff;
+	background: #B2382C;
+	border: 4px solid #B2382C;
+}
+.skateboarders-arrow:after, .skateboarders-arrow:before {
+	left: 102%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.skateboarders-arrow:after {
+	border-color: rgba(213, 80, 60, 0);
+	border-left-color: #B2382C;
+	border-width: 45px;
+	margin-top: -45px;
+}
+.skateboarders-arrow:before {
+	border-color: rgba(194, 225, 245, 0);
+	border-left-color: #B2382C;
+	border-width: 45px;
+	margin-top: -45px;
+}
+
+.skater-two {
+  background: url('/images/Rodney.png');
+  @include omega();
+}
+
+.skater-rodney {
+  text-align: center;
+  font-size: 4em;
+  color: #ffffff; 
+}
+
+.skaters-wide {
+  @include span-columns(12);
+  @include omega();
+  height: 250px;
+  background: url('/images/Steve.png');
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.skater-steve {
+  text-align: center;
+  font-size: 4em;
+  color: #ffffff; 
+  margin-top: 75px;
+}
+
+.skateboarders-group-two {
+  @include span-columns(4);
+}
+
+.skaters-tall {
+  @include span-columns(12);
+  height: 525px;
+  background: url('/images/Tommy.png');
+  background-position: 80% 25%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.skater-tommy {
+  margin-top: 180px;
+  text-align: center;
+  font-size: 4em;
+  color: #ffffff; 
+}
+
+.section-skateboards {
+  padding: 10px 0 10px 0;
+  background-color: #ffffff;
+  margin-bottom: 25px;
+}
+
+.skateboard-one {
+  @include shift(.5);
+}
+
+.skateboards {
+  @include span-columns(1.1);
+}
+
+.section-contact-us {
+  background-color: #ffffff;
+  height: 500px;
+  margin-bottom: 100px;
+  padding: 15px;
+}
+
+
+.contact-info {
+  @include span-columns(6);
+  height: 470px;
+}
+
+.contact-paragraph {
+  line-height: 30px;
+  font-size: 1.5em;
+}
+
+.contact-form {
+  @include span-columns(6);
+  @include omega();
+  
+  .name-input {
+    @include span-columns(12);
+    margin-bottom: 15px;
+    height: 75px;
+    border: none;
+    background: rgba(255,255,255,.9);
+    box-shadow: inset 0 .10em .10em rgba(0,0,0,.8);
+    padding-left: 1em;
+    color: rgba(0,0,0,.65);
+    font-family: "Helvetica", Arial, sans-serif;
+    font-size: 100%;
+    margin-bottom: 25px;
+  }
+  
+  .email-input {
+    @include span-columns(12);
+    margin-bottom: 15px;
+    height: 75px;
+    border: none;
+    background: rgba(255,255,255,.9);
+    box-shadow: inset 0 .10em .10em rgba(0,0,0,.8);
+    padding-left: 1em;
+    color: rgba(0,0,0,.65);
+    font-family: "Helvetica", Arial, sans-serif;
+    font-size: 100%;
+    margin-bottom: 25px;
+  }
+  
+  .message-input {
+    @include span-columns(12);
+    margin-bottom: 15px;
+    border: none;
+    background: rgba(255,255,255,.9);
+    box-shadow: inset 0 .10em .10em rgba(0,0,0,.8);
+    padding-left: 1em;
+    color: rgba(0,0,0,.65);
+    font-family: "Helvetica", Arial, sans-serif;
+    font-size: 100%;
+  }
+  
+  .submit-btn {
+    @include span-columns(5);
+    @include shift(7);
+    @include omega();
+    background-color: #B2382C;
+    border: none;
+    color: #ffffff;
+    height: 50px;
+  }
 }

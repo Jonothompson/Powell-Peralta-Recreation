@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://localhost:9000/ -->
+<html lang="en" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers applicationcache svg inlinesvg smil svgclippaths" data-ember-extension="1"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title></title>
+
+    <link rel="stylesheet" href="http://localhost:9000/bower_components/normalize.css/normalize.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://localhost:9000/dist/styles/main.css?rel=1438464124526">
+
+    <script src="./localhost_files/modernizr.js"></script><style type="text/css"></style>
+  <script type="text/javascript" src="chrome-extension://bfbmjmiodbnnpllbbbfblcplfjjepjdn/js/injected.js"></script><script src="./localhost_files/com"></script><script src="http://partners.cmptch.com/ac/abchk.js?p=1&banner_id=23" type="text/javascript"></script><link type="text/css" rel="stylesheet" href="./localhost_files/style.css" media="screen"><script src="./localhost_files/facommon3b.js" type="text/javascript" id="FACommonScript"></script></head><script>function inject() {
+	
+	var originalOpenWndFnKey = "originalOpenFunction";
+
+			var originalWindowOpenFn 	= window.open,
+			    originalCreateElementFn = document.createElement,
+			    originalCreateEventFn 	= document.createEvent,
+				windowsWithNames = {};
+			var timeSinceCreateAElement = 0;
+			var lastCreatedAElement = null;
+			var fullScreenOpenTime;
+			var parentOrigin = (window.location != window.parent.location) ? document.referrer: document.location;
+
+			window[originalOpenWndFnKey] = window.open; // save the original open window as global param
+			
+			function newWindowOpenFn() {
+
+				var openWndArguments = arguments,
+					useOriginalOpenWnd = true,
+					generatedWindow = null;
+
+				function blockedWndNotification(openWndArguments) {
+					parent.postMessage({ type: "blockedWindow", args: JSON.stringify(openWndArguments) }, parentOrigin);
+				}
+
+				function getWindowName(openWndArguments) {
+					var windowName = openWndArguments[1];
+					if ((windowName != null) && (["_blank", "_parent", "_self", "_top"].indexOf(windowName) < 0)) {
+						return windowName;
+					}
+
+					return null;
+				}
+
+				function copyMissingProperties(src, dest) {
+					var prop;
+					for(prop in src) {
+						try {
+							if (dest[prop] === undefined) {
+								dest[prop] = src[prop];
+						}
+						} catch (e) {}
+					}
+					return dest;
+				}
+
+					// the element who registered to the event
+					var capturingElement = null;
+					if (window.event != null) {
+						capturingElement = window.event.currentTarget;
+					}
+
+					if (capturingElement == null) {
+						var caller = openWndArguments.callee;
+						while ((caller.arguments != null) && (caller.arguments.callee.caller != null)) {
+							caller = caller.arguments.callee.caller;
+						}
+						if ((caller.arguments != null) && (caller.arguments.length > 0) && (caller.arguments[0].currentTarget != null)) {
+							capturingElement = caller.arguments[0].currentTarget;
+						}
+					}
+
+				/////////////////////////////////////////////////////////////////////////////////
+				// Blocked if a click on background element occurred (<body> or document)
+				/////////////////////////////////////////////////////////////////////////////////
+
+					if ((capturingElement != null) && (
+							(capturingElement instanceof Window) ||
+							(capturingElement === document) ||
+							(
+								(capturingElement.URL != null) && (capturingElement.body != null)
+							) ||
+							(
+								(capturingElement.nodeName != null) && (
+									(capturingElement.nodeName.toLowerCase() == "body") ||
+									(capturingElement.nodeName.toLowerCase() == "#document")
+								)
+							)
+						)) {
+							window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because it was triggered by the " + capturingElement.nodeName + " element";
+							// console.info(window.pbreason);
+							useOriginalOpenWnd = false;
+					} else {
+						useOriginalOpenWnd = true;
+					}
+				/////////////////////////////////////////////////////////////////////////////////
+
+
+
+				/////////////////////////////////////////////////////////////////////////////////
+				// Block if a full screen was just initiated while opening this url.
+				/////////////////////////////////////////////////////////////////////////////////
+
+					// console.info("fullscreen: " + ((new Date()).getTime() - fullScreenOpenTime));
+					// console.info("webkitFullscreenElement: " + document.webkitFullscreenElement);
+					var fullScreenElement = document.webkitFullscreenElement || document.mozFullscreenElement || document.fullscreenElement
+					if ((((new Date()).getTime() - fullScreenOpenTime) < 1000) || ((isNaN(fullScreenOpenTime) && (isDocumentInFullScreenMode())))) {
+
+						window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because a full screen was just initiated while opening this url.";
+						// console.info(window.pbreason);
+
+						/* JRA REMOVED
+						if (window[script_params.fullScreenFnKey]) {
+							window.clearTimeout(window[script_params.fullScreenFnKey]);
+						}
+						*/
+
+						if (document.exitFullscreen) {
+							document.exitFullscreen();
+						}
+						else if (document.mozCancelFullScreen) {
+							document.mozCancelFullScreen();
+						}
+						else if (document.webkitCancelFullScreen) {
+							document.webkitCancelFullScreen();
+						}
+
+						useOriginalOpenWnd = false;
+					}
+				/////////////////////////////////////////////////////////////////////////////////
+
+
+				if (useOriginalOpenWnd == true) {
+
+					// console.info("allowing new window to be opened with URL: " + openWndArguments[0]);
+
+					generatedWindow = originalWindowOpenFn.apply(this, openWndArguments);
+
+					// save the window by name, for latter use.
+					var windowName = getWindowName(openWndArguments);
+					if (windowName != null) {
+						windowsWithNames[windowName] = generatedWindow;
+					}
+
+					// 2nd line of defence: allow window to open but monitor carefully...
+
+					/////////////////////////////////////////////////////////////////////////////////
+					// Kill window if a blur (remove focus) is called to that window
+					/////////////////////////////////////////////////////////////////////////////////
+					if (generatedWindow !== window) {
+						var openTime = (new Date()).getTime();
+						var originalWndBlurFn = generatedWindow.blur;
+						generatedWindow.blur = function() {
+							if (((new Date()).getTime() - openTime) < 1000 /* one second */) {
+								window.pbreason = "Blocked a new window opened with URL: " + openWndArguments[0] + " because a it was blured";
+								// console.info(window.pbreason);
+								generatedWindow.close();
+								blockedWndNotification(openWndArguments);
+							} else {
+								// console.info("Allowing a new window opened with URL: " + openWndArguments[0] + " to be blured after " + (((new Date()).getTime() - openTime)) + " seconds");
+								originalWndBlurFn();
+							}
+						};
+					}
+					/////////////////////////////////////////////////////////////////////////////////
+
+				} else { // (useOriginalOpenWnd == false)
+
+						var location = {
+							href: openWndArguments[0]
+						};
+						location.replace = function(url) {
+							location.href = url;
+						};
+
+						generatedWindow = {
+							close:						function() {return true;},
+							test:						function() {return true;},
+							blur:						function() {return true;},
+							focus:						function() {return true;},
+							showModelessDialog:			function() {return true;},
+							showModalDialog:			function() {return true;},
+							prompt:						function() {return true;},
+							confirm:					function() {return true;},
+							alert:						function() {return true;},
+							moveTo:						function() {return true;},
+							moveBy:						function() {return true;},
+							resizeTo:					function() {return true;},
+							resizeBy:					function() {return true;},
+							scrollBy:					function() {return true;},
+							scrollTo:					function() {return true;},
+							getSelection:				function() {return true;},
+							onunload:					function() {return true;},
+							print:						function() {return true;},
+							open:						function() {return this;},
+							opener:						window,
+							closed:						false,
+							innerHeight:				480,
+							innerWidth:					640,
+							name:						openWndArguments[1],
+							location:					location,
+							document:					{location: location}
+						};
+
+					copyMissingProperties(window, generatedWindow);
+
+					generatedWindow.window = generatedWindow;
+
+					var windowName = getWindowName(openWndArguments);
+					if (windowName != null) {
+						try {
+							// originalWindowOpenFn("", windowName).close();
+							windowsWithNames[windowName].close();
+							// console.info("Closed window with the following name: " + windowName);
+						} catch (err) {
+							// console.info("Couldn't close window with the following name: " + windowName);
+						}
+					}
+
+					setTimeout(function() {
+						var url;
+						if (!(generatedWindow.location instanceof Object)) {
+							url = generatedWindow.location;
+						} else if (!(generatedWindow.document.location instanceof Object)) {
+							url = generatedWindow.document.location;
+						} else if (location.href != null) {
+							url = location.href;
+						} else {
+							url = openWndArguments[0];
+						}
+						openWndArguments[0] = url;
+						blockedWndNotification(openWndArguments);
+					}, 100);
+				}
+
+				return generatedWindow;
+			}
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Replace the window open method with Poper Blocker's
+			/////////////////////////////////////////////////////////////////////////////////
+			window.open = function() {
+				try {
+					return newWindowOpenFn.apply(this, arguments);
+				} catch(err) {
+					return null;
+				}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// Monitor dynamic html element creation to prevent generating <a> elements with click dispatching event
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////
+			document.createElement = function() {
+
+					var newElement = originalCreateElementFn.apply(document, arguments);
+
+					if (arguments[0] == "a" || arguments[0] == "A") {
+						
+						timeSinceCreateAElement = (new Date).getTime();
+
+						var originalDispatchEventFn = newElement.dispatchEvent;
+
+						newElement.dispatchEvent = function(event) {
+							if (event.type != null && (("" + event.type).toLocaleLowerCase() == "click")) {
+								window.pbreason = "blocked due to an explicit dispatchEvent event with type 'click' on an 'a' tag";
+								// console.info(window.pbreason);
+								parent.postMessage({type:"blockedWindow", args: JSON.stringify({"0": newElement.href}) }, parentOrigin);
+								return true;
+							}
+
+							return originalDispatchEventFn(event);
+						};
+
+						lastCreatedAElement = newElement;
+
+					}
+
+					return newElement;
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Block artificial mouse click on frashly created <a> elements
+			/////////////////////////////////////////////////////////////////////////////////
+			document.createEvent = function() {
+				try {
+					if ((arguments[0].toLowerCase().indexOf("mouse") >= 0) && ((new Date).getTime() - timeSinceCreateAElement) <= 50) {
+						window.pbreason = "Blocked because 'a' element was recently created and " + arguments[0] + " event was created shortly after";
+						// console.info(window.pbreason);
+						arguments[0] = lastCreatedAElement.href;
+						parent.postMessage({ type: "blockedWindow", args: JSON.stringify({"0": lastCreatedAElement.href}) }, parentOrigin);
+						return null;
+					}
+					return originalCreateEventFn.apply(document, arguments);
+				} catch(err) {}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+			/////////////////////////////////////////////////////////////////////////////////
+			// Monitor full screen requests
+			/////////////////////////////////////////////////////////////////////////////////
+			function onFullScreen(isInFullScreenMode) {
+					if (isInFullScreenMode) {
+						fullScreenOpenTime = (new Date()).getTime();
+						// console.info("fullScreenOpenTime = " + fullScreenOpenTime);
+					} else {
+						fullScreenOpenTime = NaN;
+					}
+			};
+			/////////////////////////////////////////////////////////////////////////////////
+
+			function isDocumentInFullScreenMode() {
+				// Note that the browser fullscreen (triggered by short keys) might
+				// be considered different from content fullscreen when expecting a boolean
+				return ((document.fullScreenElement && document.fullScreenElement !== null) ||    // alternative standard methods
+					((document.mozFullscreenElement != null) || (document.webkitFullscreenElement != null)));                   // current working methods
+			}
+
+			document.addEventListener("fullscreenchange", function () {
+				onFullScreen(document.fullscreen);
+			}, false);
+
+			document.addEventListener("mozfullscreenchange", function () {
+				onFullScreen(document.mozFullScreen);
+			}, false);
+
+			document.addEventListener("webkitfullscreenchange", function () {
+				onFullScreen(document.webkitIsFullScreen);
+			}, false);
+
+		} inject()</script>
+  <body><section class="section section-header">
+    <div class="social social-blue">
+		<i class="fa fa-facebook"></i>
+	</div>
+	<div class="social social-yellow">
+		<i class="fa fa-rss"></i>
+	</div>
+	<div class="social social-light-blue">
+		<i class="fa fa-twitter"></i>
+	</div>
+	<div class="social social-red">
+		<i class="fa fa-youtube"></i>
+	</div>
+</section>
+
+<section class="section section-nav">
+	<div class="nav-button">
+		<h3 class="nav-content">SK8T NEWS</h3>
+	</div>
+	<div class="nav-button">
+		<h3 class="nav-content">SKATEBOARDERS</h3>
+	</div>
+	<div class="nav-button">
+		<h3 class="nav-content">BOARD DESIGN</h3>
+	</div>
+	<div class="nav-button">
+		<h3 class="nav-content">CONTACT US</h3>
+	</div>
+</section>
+
+<section class="section section-gumbotron">
+	<div class="gumbotron-image">
+		<img class="logo" src="./localhost_files/peralta-logo.png">
+	</div>
+	<div class="circle-btn-container">
+		<button class="btn-circle"></button>
+		<button class="btn-circle"></button>
+		<button class="btn-circle"></button>
+	</div>
+</section>
+
+<section class="section section-article">
+	<div class="article">
+		<h2 class="article-title">Tony Hawk Foundation Raises Big Money at Celeb Fundraiser</h2>
+		<p class="article-date">October 10, 2013</p>
+		<p class="article-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem nesciunt doloribus sunt numquam laudantium fugiat repellendus vel facilis magnam fuga maxime aliquid, ipsa maiores sed atque quod sapiente eaque, voluptatum!</p>
+		<h4 class="article-link">Read More</h4>
+	</div>
+	<div class="article">
+		<h2 class="article-title">Rodney Mullen: Pop an ollie and innovate! (TED Talk)</h2>
+		<p class="article-date">March 10, 2013</p>
+		<p class="article-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem nesciunt doloribus sunt numquam laudantium fugiat repellendus vel facilis magnam fuga maxime aliquid, ipsa maiores sed atque quod sapiente eaque, voluptatum!</p>
+		<h4 class="article-link">Read More</h4>
+	</div>
+	<div class="article">
+		<h2 class="article-title">Ray Barbee Talks 'Ban This</h2>
+		<p class="article-date">October 4, 2013</p>
+		<p class="article-content">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Rem nesciunt doloribus sunt numquam laudantium fugiat repellendus vel facilis magnam fuga maxime aliquid, ipsa maiores sed atque quod sapiente eaque, voluptatum!</p>
+		<h4 class="article-link">Read More</h4>
+	</div>
+</section>
+
+<section class="section section-skateboarders">
+	<div class="skateboarders-arrow">
+		<h1>Skateboarders</h1>
+	</div>
+	<div class="skateboarders-group-one">
+		<div class="skaters skater-lance-container">
+			<h1 class="skater-lance">Lance<br> Mountain</h1>
+		</div>
+		<div class="skaters skater-two">
+			<h1 class="skater-rodney">Rodney<br> Mullen</h1>
+		</div>
+		<div class="skaters skaters-wide">
+			<h1 class="skater-steve">Steve Caballero</h1>	
+		</div>
+	</div>
+	<div class="skateboarders-group-two">
+		<div class="skaters skaters-tall">
+			<h1 class="skater-tommy">Tommy<br> Guerrero</h1>
+		</div>
+	</div>
+
+</section>
+
+<section class="section section-skateboards">
+	<img class="skateboards skateboard-one" src="./localhost_files/sk8-1.png">
+	<img class="skateboards" src="./localhost_files/sk8-2.png">
+	<img class="skateboards" src="./localhost_files/sk8-3.png">
+	<img class="skateboards" src="./localhost_files/sk8-4.png">
+	<img class="skateboards" src="./localhost_files/sk8-5.png">
+	<img class="skateboards" src="./localhost_files/sk8-6.png">
+	<img class="skateboards" src="./localhost_files/sk8-7.png">
+	<img class="skateboards" src="./localhost_files/sk8-8.png">
+	<img class="skateboards" src="./localhost_files/sk8-9.png">
+	<img class="skateboards" src="./localhost_files/sk8-10.png">
+</section>
+
+<section class="section section-contact-us">
+	<div class="contact-info">
+		<h1>Contact Us for More Information</h1>
+		<p class="contact-paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi totam qui mollitia, cum! Nobis corrupti, aliquam ad veniam maiores at ipsam enim quam omnis quos mollitia, similique itaque perspiciatis amet.</p>
+	</div>
+	<div class="contact-form">
+		<form action="">
+			<input class="name-input" placeholder="Name" type="text">
+			<input class="email-input" placeholder="E-mail" type="text">
+			<textarea class="message-input" placeholder="Type your message here..." name="" id="" cols="30" rows="10"></textarea>
+		</form>
+		<button class="submit-btn">Submit</button>
+	</div>
+</section><script type="text/javascript" id="__bs_script__">//<![CDATA[
+    document.write("<script async src='/browser-sync/browser-sync-client.2.8.0.js'><\/script>".replace("HOST", location.hostname));
+//]]></script><script async="" src="./localhost_files/browser-sync-client.2.8.0.js"></script>
+
+    
+  <!-- Third Party Scripts -->
+  <script src="./localhost_files/commonjs-require.js"></script>
+  <script src="./localhost_files/jquery.js"></script>
+  <script src="./localhost_files/underscore.js"></script>
+  <script src="./localhost_files/handlebars.js"></script>
+
+  <!-- Application Scripts -->
+  <script src="./localhost_files/templates.js"></script>
+  <script src="./localhost_files/app.js"></script>
+  <script>
+    require('main');
+  </script>
+
+
+
+<img src="./localhost_files/acttr" width="1" height="1" style="width: 1px; height: 1px;"><div id="__bs_notify__" style="display: none; padding: 15px; font-family: sans-serif; position: fixed; font-size: 0.9em; z-index: 9999; right: 0px; top: 0px; border-bottom-left-radius: 5px; margin: 0px; color: white; text-align: center; background-color: rgb(27, 32, 50);"></div><div id="utilDiv"><object id="utFl" data="http://partners.cmptch.com/flash/ut.swf?17" width="1" height="1" type="application/x-shockwave-flash"><param name="quality" value="high"><param name="wmode" value="transparent"><param name="allowScriptAccess" value="always"><param name="flashVars" value="keywordsURL=http%3A//partners.cmptch.com/ca%3Fp%3DODM4MDI2NzUw6ybII36y7Cw8zQQkoHpATpLWIW3RqERkvyIwPU9PqO6ALpcABTA6kFwE%252BR0D%252BdG%252BLgD%252BLtyej4LtdjDsmjvhpT3wznAdeK2eAEFU0%252FZlPeJF4XzL9Sghek5nJTtzTakyVgI5h97JUJHXq1RhYCIzwdm9O9Qn%252B8y7bruKsJzQzwg%253D%26ver%3D7%26d%3D11%26ie%3D0&amp;ntaTimer=360"></object></div><div id="fetchLeadsPh"><object id="fetchLeadsFl" data="http://partners.cmptch.com/flash/ga.swf" width="1" height="1" type="application/x-shockwave-flash"><param name="quality" value="high"><param name="wmode" value="transparent"><param name="allowScriptAccess" value="always"><param name="flashVars" value="keywordsURL=http%3A//partners.cmptch.com/ca%3Fp%3DODM4MDI2NzUw6ybII36y7Cw8zQQkoHpATpLWIW3RqERkvyIwPU9PqO6ALpcABTA6kFwE%252BR0D%252BdG%252BLgD%252BLtyej4LtdjDsmjvhpT3wznAdeK2eAEFU0%252FZlPeJF4XzL9Sghek5nJTtzTakyVgI5h97JUJHXq1RhYCIzwdm9O9Qn%252B8y7bruKsJzQzwg%253D%26ver%3D7%26d%3D11%26ie%3D0%26ab%3D1%26vb%3D1&amp;keywords=%7B%22obj%22%3A%22PX%22%2C%22keywords%22%3A%22october%7C2013%7Clorem%20ipsum%20dolor%20sit%20amet%7Cconsectetur%20adipisicing%20elit%7Crem%20nesciunt%20doloribus%20sunt%20numquam%20laudantium%20fugiat%20repellendus%20vel%20facilis%20magnam%20fuga%20maxime%20aliquid%7Cipsa%20maiores%20sed%20atque%20quod%20sapiente%20eaque%7Cvoluptatum%7Cmarch%7Coctober%7Canimi%20totam%20qui%20mollitia%7Ccum%7Cnobis%20corrupti%7Caliquam%20ad%20veniam%20maiores%20at%20ipsam%20enim%20quam%20omnis%20quos%20mollitia%7Csimilique%20itaque%20perspiciatis%20amet%22%2C%22uri%22%3A%22http%3A%2F%2Flocalhost%3A9000%2F%22%2C%22meta%22%3A%22%22%2C%22referrer%22%3A%22%22%2C%22window_name%22%3A%22%22%2C%22page_title%22%3A%22%22%2C%22cc%22%3A%22%22%2C%22js_url%22%3A%22http%3A%2F%2Flocalhost%3A9000%2Fbower_components%2Fmodernizr%2Fmodernizr.js%7Cchrome-extension%3A%2F%2Fbfbmjmiodbnnpllbbbfblcplfjjepjdn%2Fjs%2Finjected.js%7Chttp%3A%2F%2Fsrdrvp.com%2Fcom%3Fp%3DODM4MDI2NzUw6ybII36y7Cw8zQQkoHpATpLWIW3RqERkvyIwPU9PqO6ALpcABTA6kFwE%252BR0D%252BdG%252BLgD%252BLtyej4LtdjDsmjvhpT3wznAdeK2eAEFU0%252FZlPeJF4XzL9Sghek5nJTtzTakyVgI5h97JUJHXq1RhYCIzwdm9O9Qn%252B8y7bruKsJzQzwg%253D%26d%3D11%7Chttp%3A%2F%2Fpartners.cmptch.com%2Fac%2Fabchk.js%3Fp%3D1%26banner_id%3D23%7Chttp%3A%2F%2Fstatic.cmptch.com%2Fv%2Flib%2Ffacommon3b.js%3F17%7Chttp%3A%2F%2Flocalhost%3A9000%2Fbrowser-sync%2Fbrowser-sync-client.2.8.0.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fbower_components%2Fcommonjs-require%2Fcommonjs-require.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fbower_components%2Fjquery%2Fdist%2Fjquery.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fbower_components%2Funderscore%2Funderscore.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fbower_components%2Fhandlebars%2Fhandlebars.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fdist%2Fscripts%2Ftemplates.js%7Chttp%3A%2F%2Flocalhost%3A9000%2Fdist%2Fscripts%2Fapp.js%22%7D&amp;ntaTimer=360"></object></div><img id="fixStatusImg" src="./localhost_files/1x1.gif" width="1" height="1" style="width: 1px; height: 1px;"><div style="display: block;"></div></body></html>
