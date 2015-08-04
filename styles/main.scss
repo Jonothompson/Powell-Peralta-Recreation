@@ -19,7 +19,7 @@ body {
   background-color: $base-background-color;
   color: $base-font-color;
   // background-image: url('/images/bg.jpg');
-  background: url(/images/bg.jpg) no-repeat; 
+  background: url(images/bg.jpg) no-repeat; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -93,7 +93,7 @@ section {
 
 .gumbotron-image {
   @include span-columns(12);
-  background-image: url('/images/top-image.png');
+  background-image: url('images/top-image.png');
   height: 500px;
   padding: 75px 0 0 15px;
   margin-bottom: 25px;
@@ -168,7 +168,7 @@ section {
 }
 
 .skater-lance-container {
-  background: url('/images/Lance.png');
+  background: url('images/Lance.png');
   background-position: 75% 50%
 }
 
@@ -211,7 +211,7 @@ section {
 }
 
 .skater-two {
-  background: url('/images/Rodney.png');
+  background: url('images/Rodney.png');
   @include omega();
 }
 
@@ -225,7 +225,7 @@ section {
   @include span-columns(12);
   @include omega();
   height: 250px;
-  background: url('/images/Steve.png');
+  background: url('images/Steve.png');
   background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -245,7 +245,7 @@ section {
 .skaters-tall {
   @include span-columns(12);
   height: 525px;
-  background: url('/images/Tommy.png');
+  background: url('images/Tommy.png');
   background-position: 80% 25%;
   background-repeat: no-repeat;
   background-size: cover;
